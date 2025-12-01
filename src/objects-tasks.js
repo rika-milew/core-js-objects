@@ -75,8 +75,12 @@ function removeProperties(obj, keys) {
  *    compareObjects({a: 1, b: 2}, {a: 1, b: 2}) => true
  *    compareObjects({a: 1, b: 2}, {a: 1, b: 3}) => false
  */
-function compareObjects(/* obj1, obj2 */) {
-  throw new Error('Not implemented');
+function compareObjects(obj1, obj2) {
+  const keys1 = Object.keys(obj1);
+  return keys1.every(
+    (key) =>
+      Object.prototype.hasOwnProperty.call(obj2, key) && obj1[key] === obj2[key]
+  );
 }
 
 /**
@@ -148,8 +152,34 @@ function makeWord(lettersObject) {
  *    sellTickets([25, 25, 50]) => true
  *    sellTickets([25, 100]) => false (The seller does not have enough money to give change.)
  */
-function sellTickets(/* queue */) {
-  throw new Error('Not implemented');
+function sellTickets(queue) {
+  const change = { 25: 0, 50: 0 };
+  for (let i = 0; i < queue.length; i += 1) {
+    const bill = queue[i];
+    switch (bill) {
+      case 25:
+        change[25] += 1;
+        break;
+      case 50:
+        change[25] -= 1;
+        if (change[25] < 0) return false;
+        change[50] += 1;
+        break;
+      case 100:
+        if (change[50] > 0 && change[25] > 0) {
+          change[50] -= 1;
+          change[25] -= 1;
+        } else if (change[25] >= 3) {
+          change[25] -= 3;
+        } else {
+          return false;
+        }
+        break;
+      default:
+        return false;
+    }
+  }
+  return true;
 }
 
 /**
